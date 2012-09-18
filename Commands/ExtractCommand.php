@@ -46,7 +46,7 @@ class ExtractCommand extends Command
 	protected function configure()
 	{
 		$this
-			->setName('venne:translator:extract')
+			->setName('translator:extract')
 			->setDescription('Extract strings from path.')
 			->addArgument('path', InputArgument::REQUIRED, 'path for extract')
 			->addArgument('file', InputArgument::OPTIONAL, 'file for save');
