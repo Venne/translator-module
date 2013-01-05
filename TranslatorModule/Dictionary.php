@@ -60,9 +60,8 @@ class Dictionary extends Object implements IDictionary
 		$data = array();
 
 		foreach ($this->getFiles() as $file) {
-			$ex = explode('.', $file);
-
-			$class = "\\TranslatorModule\\Drivers\\" . ucfirst($ex[2]) . "Driver";
+			$fileInfo = new \SplFileInfo($file);
+			$class = "\\TranslatorModule\\Drivers\\" . ucfirst($fileInfo->getExtension()) . "Driver";
 
 			/** @var $driver IDriver */
 			$driver = new $class($file);
