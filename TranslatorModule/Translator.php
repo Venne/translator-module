@@ -11,11 +11,11 @@
 
 namespace TranslatorModule;
 
-use Venne;
-use Nette\Object;
-use Nette\Localization\ITranslator;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
+use Nette\Localization\ITranslator;
+use Nette\Object;
+use Nette\Utils\Strings;
 use TranslatorModule\Drivers\IDriver;
 
 /**
@@ -86,11 +86,11 @@ class Translator extends Object implements ITranslator
 		$this->loadData();
 
 		if (isset($this->data[$lcMessage]) && $count === NULL) {
-			return $uc ? ucfirst($this->data[$lcMessage]) : $this->data[$lcMessage];
+			return $uc ? Strings::firstUpper($this->data[$lcMessage]) : $this->data[$lcMessage];
 		}
 
 		if (isset($this->data[$lcMessage]) && $count !== NULL) {
-			return $uc ? ucfirst($this->data[$lcMessage][$count]) : $this->data[$lcMessage][$count];
+			return $uc ? Strings::firstUpper($this->data[$lcMessage][$count]) : $this->data[$lcMessage][$count];
 		}
 
 		return $message;
