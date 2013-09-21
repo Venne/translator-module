@@ -40,8 +40,8 @@ Dictionary is folder with translation files. File format must be `<name>.<lang>.
 
 command:
 
-	php www/index.php venne:translator:extract vendor/venne/cms-module/
+	php www/index.php translator:extract vendor/venne/cms-module/
 
 save into file:
 
-	php www/index.php venne:translator:extract vendor/venne/cms-module/ vendor/venne/cms-module/CmsModule/Resources/translations/test.cs.neon
+	php www/index.php translator:extract vendor/venne/cms-module/ vendor/venne/cms-module/CmsModule/Resources/translations/test.cs.neon
