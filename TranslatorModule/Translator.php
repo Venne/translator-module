@@ -13,6 +13,7 @@ namespace TranslatorModule;
 
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
+use Nette\InvalidArgumentException;
 use Nette\Localization\ITranslator;
 use Nette\Object;
 use Nette\Utils\Strings;
@@ -79,21 +80,34 @@ class Translator extends Object implements ITranslator
 	 * @param  int      plural count
 	 * @return string
 	 */
-	public function translate($message, $count = NULL)
+	public function translate($message, $count = NULL, array $parameters = array())
 	{
+		$pluralization = $count !== NULL ? PluralizationRules::get($count, $this->lang) : 0;
+
 		$lcMessage = lcfirst($message);
 		$uc = ctype_upper(substr($message, 0, 1));
 		$this->loadData();
 
-		if (isset($this->data[$lcMessage]) && $count === NULL) {
-			return $uc ? Strings::firstUpper($this->data[$lcMessage]) : $this->data[$lcMessage];
+		if (isset($this->data[$lcMessage])) {
+			$ret = isset($this->data[$lcMessage][$pluralization]) ? $this->data[$lcMessage][$pluralization] : $this->data[$lcMessage][0];
+		} else {
+			$ret = explode('|', $message);
+			$ret = isset($ret[$pluralization]) ? $ret[$pluralization] : $ret[0];
 		}
 
-		if (isset($this->data[$lcMessage]) && $count !== NULL) {
-			return $uc ? Strings::firstUpper($this->data[$lcMessage][$count]) : $this->data[$lcMessage][$count];
+		if ($count !== NULL) {
+			$parameters += array('count' => $count);
 		}
 
-		return $message;
+		foreach ($parameters as $key => $val) {
+			$ret = str_replace('%' . $key . '%', $val, $ret);
+		}
+
+		if ($uc) {
+			$ret = Strings::firstUpper($ret);
+		}
+
+		return $ret;
 	}
 
 
@@ -147,7 +161,15 @@ class Translator extends Object implements ITranslator
 	{
 		$data = array();
 		foreach ($this->dictionaries as $item) {
-			$data = $data + $item->getData();
+			$items = array();
+			foreach ($item->getData() as $key => $val) {
+				if (!is_string($val)) {
+					throw new InvalidArgumentException("Value must be string.");
+				}
+
+				$items[$key] = explode('|', $val);
+			}
+			$data = $data + $items;
 		}
 		return $data;
 	}
