@@ -163,11 +163,11 @@ class Translator extends Object implements ITranslator
 		foreach ($this->dictionaries as $item) {
 			$items = array();
 			foreach ($item->getData() as $key => $val) {
-				if (!is_string($val)) {
+				if (!is_scalar($val) && $val !== NULL) {
 					throw new InvalidArgumentException("Value must be string.");
 				}
 
-				$items[$key] = explode('|', $val);
+				$items[$key] = explode('|', (string)$val);
 			}
 			$data = $data + $items;
 		}
